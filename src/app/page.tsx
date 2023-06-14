@@ -1,95 +1,131 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+'use client'
+import React, { useContext, useEffect, useState } from 'react';
+import type { NextPage } from 'next';
+import { GetStaticProps } from 'next';
+import Head from 'next/head';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useTour } from '@reactour/tour';
+import Button, { ButtonGroup } from '../components/bootstrap/Button';
+import PageWrapper from '../layout/PageWrapper/PageWrapper';
+import { demoPagesMenu } from '../menu';
+import SubHeader, {
+	SubHeaderLeft,
+	SubHeaderRight,
+	SubheaderSeparator,
+} from '../layout/SubHeader/SubHeader';
+import CommonAvatarTeam from '../common/partial/other/CommonAvatarTeam';
+import ThemeContext from '../context/themeContext';
+import useDarkMode from '../hooks/useDarkMode';
+import { TABS, TTabs } from '../common/type/helper';
+import Page from '../layout/Page/Page';
+import CommonDashboardAlert from '../common/partial/CommonDashboardAlert';
+import CommonDashboardUserCard from '../common/partial/CommonDashboardUserCard';
+import CommonDashboardMarketingTeam from '../common/partial/CommonDashboardMarketingTeam';
+import CommonDashboardDesignTeam from '../common/partial/CommonDashboardDesignTeam';
+import CommonDashboardIncome from '../common/partial/CommonDashboardIncome';
+import CommonDashboardRecentActivities from '../common/partial/CommonDashboardRecentActivities';
+import CommonDashboardUserIssue from '../common/partial/CommonDashboardUserIssue';
+import CommonDashboardSalesByStore from '../common/partial/CommonDashboardSalesByStore';
+import CommonDashboardWaitingAnswer from '../common/partial/CommonDashboardWaitingAnswer';
+import CommonDashboardTopSeller from '../common/partial/CommonDashboardTopSeller';
+import CommonMyWallet from '../common/partial/CommonMyWallet';
 
-export default function Home() {
-  return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+const Index: NextPage = () => {
+	const { mobileDesign } = useContext(ThemeContext);
+	/**
+	 * Tour Start
+	 */
+	const { setIsOpen } = useTour();
+	useEffect(() => {
+		if (
+			typeof window !== 'undefined' &&
+			localStorage.getItem('tourModalStarted') !== 'shown' &&
+			!mobileDesign
+		) {
+			setTimeout(() => {
+				setIsOpen(true);
+				localStorage.setItem('tourModalStarted', 'shown');
+			}, 3000);
+		}
+		return () => {};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+	const { themeStatus } = useDarkMode();
 
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
+	const [activeTab, setActiveTab] = useState<TTabs>(TABS.YEARLY);
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
+	return (
+		<PageWrapper>
+			<Head>
+				<title>{demoPagesMenu.sales.subMenu.dashboard.text}</title>
+			</Head>
+			<SubHeader>
+				<SubHeaderLeft>
+					<span className='h4 mb-0 fw-bold'>Overview</span>
+					<SubheaderSeparator />
+					<ButtonGroup>
+						{Object.keys(TABS).map((key) => (
+							<Button
+								key={key}
+								color={activeTab === TABS[key] ? 'success' : themeStatus}
+								onClick={() => setActiveTab(TABS[key])}>
+								{TABS[key]}
+							</Button>
+						))}
+					</ButtonGroup>
+				</SubHeaderLeft>
+				<SubHeaderRight>
+					<CommonAvatarTeam>
+						<strong>Marketing</strong> Team
+					</CommonAvatarTeam>
+				</SubHeaderRight>
+			</SubHeader>
+			<Page container='fluid'>
+				<div className='row'>
+					<div className='col-12'>
+						<CommonDashboardAlert />
+					</div>
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
+					<div className='col-xl-4'>
+						<CommonDashboardUserCard />
+					</div>
+					<div className='col-xl-4'>
+						<CommonDashboardMarketingTeam />
+					</div>
+					<div className='col-xl-4'>
+						<CommonDashboardDesignTeam />
+					</div>
 
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
-}
+					<div className='col-xxl-6'>
+						<CommonDashboardIncome activeTab={activeTab} />
+					</div>
+					<div className='col-xxl-3'>
+						<CommonDashboardRecentActivities />
+					</div>
+					<div className='col-xxl-3'>
+						<CommonDashboardUserIssue />
+					</div>
+
+					<div className='col-xxl-8'>
+						<CommonDashboardSalesByStore />
+					</div>
+					<div className='col-xxl-4 col-xl-6'>
+						<CommonDashboardWaitingAnswer />
+					</div>
+
+					<div className='col-xxl-4 col-xl-6'>
+						<CommonMyWallet />
+					</div>
+					<div className='col-xxl-8'>
+						<CommonDashboardTopSeller />
+					</div>
+				</div>
+			</Page>
+		</PageWrapper>
+	);
+};
+
+
+
+export default Index;
