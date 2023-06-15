@@ -3,7 +3,6 @@ import classNames from 'classnames';
 import { useTranslation } from 'next-i18next';
 import ReactGA from 'react-ga4';
 import { GetStaticProps } from 'next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Brand from '../../../layout/Brand/Brand';
 import Navigation, { NavigationLine } from '../../../layout/Navigation/Navigation';
 import User from '../../../layout/User/User';
@@ -132,11 +131,6 @@ const DefaultAside = () => {
 	);
 };
 
-export const getStaticProps: GetStaticProps = async ({ locale }) => ({
-	props: {
-		// @ts-ignore
-		...(await serverSideTranslations(locale, ['common', 'menu'])),
-	},
-});
+
 
 export default DefaultAside;

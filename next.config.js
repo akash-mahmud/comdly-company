@@ -14,9 +14,9 @@ const nextConfig = withInterceptStdout(
 		},
 		reactStrictMode: true,
 		swcMinify: true,
-		i18n
+		
 	}),
-	// (log) => (hideWarn.some((warn) => log.includes(warn)) ? '' : log),
+	(log) => log,
 );
 
 module.exports = nextConfig

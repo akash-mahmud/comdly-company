@@ -5,30 +5,30 @@ import { GetStaticProps } from 'next';
 import Head from 'next/head';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTour } from '@reactour/tour';
-import Button, { ButtonGroup } from '../components/bootstrap/Button';
-import PageWrapper from '../layout/PageWrapper/PageWrapper';
-import { demoPagesMenu } from '../menu';
+import Button, { ButtonGroup } from '../../components/bootstrap/Button';
+import PageWrapper from '../../layout/PageWrapper/PageWrapper';
+import { demoPagesMenu } from '../../menu';
 import SubHeader, {
 	SubHeaderLeft,
 	SubHeaderRight,
 	SubheaderSeparator,
-} from '../layout/SubHeader/SubHeader';
-import CommonAvatarTeam from '../common/partial/other/CommonAvatarTeam';
-import ThemeContext from '../context/themeContext';
-import useDarkMode from '../hooks/useDarkMode';
-import { TABS, TTabs } from '../common/type/helper';
-import Page from '../layout/Page/Page';
-import CommonDashboardAlert from '../common/partial/CommonDashboardAlert';
-import CommonDashboardUserCard from '../common/partial/CommonDashboardUserCard';
-import CommonDashboardMarketingTeam from '../common/partial/CommonDashboardMarketingTeam';
-import CommonDashboardDesignTeam from '../common/partial/CommonDashboardDesignTeam';
-import CommonDashboardIncome from '../common/partial/CommonDashboardIncome';
-import CommonDashboardRecentActivities from '../common/partial/CommonDashboardRecentActivities';
-import CommonDashboardUserIssue from '../common/partial/CommonDashboardUserIssue';
-import CommonDashboardSalesByStore from '../common/partial/CommonDashboardSalesByStore';
-import CommonDashboardWaitingAnswer from '../common/partial/CommonDashboardWaitingAnswer';
-import CommonDashboardTopSeller from '../common/partial/CommonDashboardTopSeller';
-import CommonMyWallet from '../common/partial/CommonMyWallet';
+} from '../../layout/SubHeader/SubHeader';
+import CommonAvatarTeam from '../../common/partial/other/CommonAvatarTeam';
+import ThemeContext from '../../context/themeContext';
+import useDarkMode from '../../hooks/useDarkMode';
+import { TABS, TTabs } from '../../common/type/helper';
+import Page from '../../layout/Page/Page';
+import CommonDashboardAlert from '../../common/partial/CommonDashboardAlert';
+import CommonDashboardUserCard from '../../common/partial/CommonDashboardUserCard';
+import CommonDashboardMarketingTeam from '../../common/partial/CommonDashboardMarketingTeam';
+import CommonDashboardDesignTeam from '../../common/partial/CommonDashboardDesignTeam';
+import CommonDashboardIncome from '../../common/partial/CommonDashboardIncome';
+import CommonDashboardRecentActivities from '../../common/partial/CommonDashboardRecentActivities';
+import CommonDashboardUserIssue from '../../common/partial/CommonDashboardUserIssue';
+import CommonDashboardSalesByStore from '../../common/partial/CommonDashboardSalesByStore';
+import CommonDashboardWaitingAnswer from '../../common/partial/CommonDashboardWaitingAnswer';
+import CommonDashboardTopSeller from '../../common/partial/CommonDashboardTopSeller';
+import CommonMyWallet from '../../common/partial/CommonMyWallet';
 
 const Index: NextPage = () => {
 	const { mobileDesign } = useContext(ThemeContext);
@@ -47,7 +47,7 @@ const Index: NextPage = () => {
 				localStorage.setItem('tourModalStarted', 'shown');
 			}, 3000);
 		}
-		return () => {};
+		return () => { };
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
