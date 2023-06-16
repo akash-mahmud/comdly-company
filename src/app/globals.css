@@ -1,0 +1,10 @@
+ .registerStepper .ant-steps-item{
+    height: 100px;
+ }
+ /* #e9ecef */
+ .registerStepper .ant-steps-item-content{
+    /* display: none !important; */
+ }
+ .registerStepper{
+    /* align-items: center; */
+ }

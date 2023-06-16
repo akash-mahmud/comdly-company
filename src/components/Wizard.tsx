@@ -46,6 +46,8 @@ interface IWizardProps extends ICardProps {
 	children: ReactElement<IWizardItemProps> | ReactElement<IWizardItemProps>[];
 	color?: TColor;
 	isHeader?: boolean | 'withButton';
+	activeItemIndex: number
+	setActiveItemIndex: React.Dispatch<React.SetStateAction<number>>
 }
 const Wizard: FC<IWizardProps> = ({
 	children,
@@ -53,10 +55,11 @@ const Wizard: FC<IWizardProps> = ({
 	isHeader = false,
 	color = 'primary',
 	stretch,
+	activeItemIndex,
+	setActiveItemIndex,
 	...props
 }) => {
 	const { themeStatus } = useDarkMode();
-	const [activeItemIndex, setActiveItemIndex] = useState(0);
 
 	const childCount = Array.isArray(children) ? children?.length : 1;
 

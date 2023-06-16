@@ -5,6 +5,7 @@ import Validation from './Validation';
 
 export interface ITextareaProps extends HTMLAttributes<HTMLTextAreaElement | HTMLInputElement> {
 	id?: string;
+	height?:string
 	name?: string;
 	size?: 'lg' | 'sm';
 	className?: string;
@@ -59,6 +60,7 @@ const Textarea: FC<ITextareaProps> = ({
 	onInput,
 	onInvalid,
 	onSelect,
+	height,
 	...props
 }) => {
 	return (
@@ -76,6 +78,9 @@ const Textarea: FC<ITextareaProps> = ({
 					className,
 				)}
 				rows={rows}
+				style={{
+					height:height
+				}}
 				name={name}
 				title={title}
 				disabled={disabled}
