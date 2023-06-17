@@ -246,10 +246,11 @@ const Index: NextPage = () => {
 			);
 		},
 	});
-	const [selectedLocation, setSelectedLocation] = useState({
-		lat:0,
-		lng:0
-	});
+	interface location{
+		lat:number
+		lng:number
+	}
+	const [selectedLocation, setSelectedLocation] = useState<null|location>(null);
 
 	const { isLoaded } = useJsApiLoader({
 	  googleMapsApiKey: 'AIzaSyBU9Sja1_zSeP3oQySDLYZ7FVYWrq-kGKU',
