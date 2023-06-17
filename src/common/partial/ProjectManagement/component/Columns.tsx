@@ -56,7 +56,7 @@ const Columns: FC<IColumns> = ({ cardsData, columnsData, setCardsData }) => {
 			tags: [],
 		},
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		onSubmit: (values) => {
+		onSubmit: (_) => {
 			setEditModalStatus(false);
 		},
 	});

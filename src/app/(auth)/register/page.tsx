@@ -3,7 +3,9 @@ import React, { FC, useState } from 'react';
 import type { NextPage } from 'next';
 import { GetStaticProps } from 'next';
 import Head from 'next/head';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import CountryPhoneInput, { ConfigProvider } from 'antd-country-phone-input';
+import en from 'world_countries_lists/data/countries/en/world.json';
+
 import { useRouter } from 'next/navigation';
 import { useFormik } from 'formik';
 import showNotification from '../../../components/extras/showNotification';
@@ -16,7 +18,7 @@ import SubHeader, {
 	SubHeaderRight,
 	SubheaderSeparator,
 } from '../../../layout/SubHeader/SubHeader';
-import { Divider, Steps } from 'antd';
+import {  Steps } from 'antd';
 
 import Button from '../../../components/bootstrap/Button';
 import User1Img from '../../../assets/img/wanna/wanna2.png';
@@ -43,7 +45,17 @@ import { FmdGood, LocationSearching, Login, Shop, ShoppingBag, ViewAgenda, Work 
 import SvgShop from '@/components/icon/material-icons/Shop';
 import SvgShoppingBag from '@/components/icon/material-icons/ShoppingBag';
 import Textarea from '@/components/bootstrap/forms/Textarea';
+import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
 
+const containerStyle = {
+  width: '100%',
+  height: '400px',
+};
+
+const center = {
+  lat: 0,
+  lng: 0,
+};
 interface IPreviewItemProps {
 	title: string;
 	value: any | any[];
@@ -74,7 +86,7 @@ interface IValues {
 	newPassword?: string;
 	confirmPassword?: string;
 	company: {
-		name:string,
+		name: string,
 		slug: string,
 		description: string,
 	}
@@ -97,9 +109,9 @@ const validate = (values: IValues) => {
 		emailNotification: [],
 		pushNotification: [],
 		company: {
-			name:'',
+			name: '',
 			slug: '',
-			description:''
+			description: ''
 		}
 	};
 	if (!values.firstName) {
@@ -199,10 +211,10 @@ const Index: NextPage = () => {
 			zip: '',
 			emailNotification: ['2'],
 			pushNotification: ['1', '2', '3'],
-			company:{
-				name:'',
-				slug:'',
-				description:''
+			company: {
+				name: '',
+				slug: '',
+				description: ''
 			}
 		},
 		validate,
@@ -234,13 +246,34 @@ const Index: NextPage = () => {
 			);
 		},
 	});
+	const [selectedLocation, setSelectedLocation] = useState({
+		lat:0,
+		lng:0
+	});
 
+	const { isLoaded } = useJsApiLoader({
+	  googleMapsApiKey: 'AIzaSyBU9Sja1_zSeP3oQySDLYZ7FVYWrq-kGKU',
+	});
+  
+	const handleMapClick = (event:google.maps.MapMouseEvent) => {
+	  setSelectedLocation({
+		lat: event?.latLng?.lat() as number,
+		lng: event?.latLng?.lng() as number,
+	  });
+	};
+	const mapOptions = {
+		fullscreenControl: false,
+		mapTypeControl: false,
+		zoomControl: false,
+		streetViewControl: false,
+	
+	  };
 	return (
 		<PageWrapper>
 			<Head>
 				<title>{demoPagesMenu.editPages.subMenu.editWizard.text}</title>
 			</Head>
-			
+
 			<Page>
 				<div className='row h-100 pb-3'>
 					<div className='col-lg-4 col-md-6'>
@@ -253,43 +286,43 @@ const Index: NextPage = () => {
 							<CardBody isScrollable>
 								<div className='row g-3'>
 									<div className='col-12'>
-									<Steps className='registerStepper' onChange={(current)=> {
-										console.log(current);
-										setActiveItemIndex(current)
-									}}
-    direction="vertical"
-	
-current={activeItemIndex}
-    items={[
-      {
-icon:<Work/>,
-title:'General company information'
-      },
-      {
-		icon:<FmdGood/>,
-		title:'Address'
-      },
-      {
-		icon:<Login/>,
-		title:'Login details'
-      },
-	  {
-		icon:<ViewAgenda/>,
-		title:'Preview'
-      },
-    ]}
-  />
+										<Steps className='registerStepper' onChange={(current) => {
+											console.log(current);
+											setActiveItemIndex(current)
+										}}
+											direction="vertical"
+
+											current={activeItemIndex}
+											items={[
+												{
+													icon: <Work />,
+													title: 'General company information'
+												},
+												{
+													icon: <FmdGood />,
+													title: 'Address'
+												},
+												{
+													icon: <Login />,
+													title: 'Login details'
+												},
+												{
+													icon: <ViewAgenda />,
+													title: 'Preview'
+												},
+											]}
+										/>
 									</div>
-								
+
 								</div>
 							</CardBody>
-						
+
 						</Card>
 					</div>
 					<div className='col-lg-8 col-md-6'>
 						{TABS.ACCOUNT_DETAIL === activeTab && (
 							<Wizard
-							
+
 								isHeader
 								setActiveItemIndex={setActiveItemIndex}
 								activeItemIndex={activeItemIndex}
@@ -300,6 +333,7 @@ title:'General company information'
 								<WizardItem id='step1' title='Account Detail'>
 									<Card>
 										<CardBody>
+											
 											<div className='row g-4 align-items-center'>
 												<div className='col-xl-auto'>
 													<Avatar src={User1Img} />
@@ -322,12 +356,14 @@ title:'General company information'
 														</div>
 														<div className='col-12'>
 															<p className='lead text-muted'>
-																This will be your company avater
+																This will be your company logo
 															</p>
 														</div>
 													</div>
 												</div>
 											</div>
+
+										
 										</CardBody>
 									</Card>
 
@@ -338,14 +374,14 @@ title:'General company information'
 											</CardLabel>
 										</CardHeader>
 										<CardBody className='pt-0'>
-											<div className='row g-4'>
+											<div className='row g-4 mb-3'>
 												<div className='col-md-6'>
 													<FormGroup
 														id='name'
 														label='Company Name'
 														isFloating>
 														<Input
-														name='company.name'
+															name='company.name'
 															placeholder='First Name'
 															autoComplete='additional-name'
 															onChange={formik.handleChange}
@@ -377,7 +413,55 @@ title:'General company information'
 															isTouched={formik.touched.company?.slug}
 															invalidFeedback={formik.errors.company?.slug}
 															validFeedback='Looks good!'
+
+														/>
+													</FormGroup>
+												</div>
+												<div className='col-md-6'>
+													<FormGroup
+														id='slug'
+														// label='Working phone'
+														formText='You can change this later'
+
+														isFloating>
+														<ConfigProvider locale={en}>
+															<CountryPhoneInput inline />
+														</ConfigProvider>
+														{/* <Input
+															placeholder='company slug'
+															autoComplete='family-name'
+															onChange={formik.handleChange}
+															onBlur={formik.handleBlur}
+															value={formik.values.company.slug}
+															isValid={formik.isValid}
+															isTouched={formik.touched.company?.slug}
+															invalidFeedback={formik.errors.company?.slug}
+															validFeedback='Looks good!'
 															
+														/> */}
+													</FormGroup>
+												</div>
+												<div className='col-md-6'>
+													<FormGroup
+														id='slug'
+														formText='You can change this later'
+														label='select'
+														isFloating>
+
+														<Select
+
+															// autoComplete='family-name'
+															onChange={formik.handleChange}
+															list={[{
+																text: 'Listing',
+																value: 'Listing'
+															}]}
+															onBlur={formik.handleBlur}
+															value={formik.values.company.slug}
+															isValid={formik.isValid}
+															isTouched={formik.touched.company?.slug}
+															invalidFeedback={formik.errors.company?.slug}
+															validFeedback='Looks good!' ariaLabel={''}
 														/>
 													</FormGroup>
 												</div>
@@ -388,7 +472,7 @@ title:'General company information'
 														isFloating
 														formText='This will be how your name will be displayed in the account section and in reviews'>
 														<Textarea
-														height='100px'
+															height='100px'
 															placeholder='Display Name'
 															autoComplete='username'
 															onChange={formik.handleChange}
@@ -403,101 +487,48 @@ title:'General company information'
 														/>
 													</FormGroup>
 												</div>
+
+											</div>
+											<div className='row g-4 align-items-center '>
+												<div className='col-xl-auto'>
+													<Avatar src={User1Img} size={80}/>
+												</div>
+												<div className='col-xl'>
+													<div className='row g-4'>
+														<div className='col-auto'>
+															<Input
+																type='file'
+																autoComplete='photo'
+															/>
+														</div>
+														<div className='col-auto'>
+															<Button
+																color='dark'
+																isLight
+																icon='Delete'>
+																Delete Avatar
+															</Button>
+														</div>
+														<div className='col-12'>
+															<p className='lead text-muted'>
+																This will be your company avater
+															</p>
+														</div>
+													</div>
+												</div>
 											</div>
 										</CardBody>
 									</Card>
 
-									<Card className='mb-0'>
-										<CardHeader>
-											<CardLabel icon='MarkunreadMailbox' iconColor='success'>
-												<CardTitle>Contact Information</CardTitle>
-											</CardLabel>
-										</CardHeader>
-										<CardBody className='pt-0'>
-											<div className='row g-4'>
-												<div className='col-12'>
-													<FormGroup
-														id='phoneNumber'
-														label='Phone Number'
-														isFloating>
-														<Input
-															placeholder='Phone Number'
-															type='tel'
-															autoComplete='tel'
-															onChange={formik.handleChange}
-															onBlur={formik.handleBlur}
-															value={formik.values.phoneNumber}
-															isValid={formik.isValid}
-															isTouched={formik.touched.phoneNumber}
-															invalidFeedback={
-																formik.errors.phoneNumber
-															}
-															validFeedback='Looks good!'
-														/>
-													</FormGroup>
-												</div>
-												<div className='col-12'>
-													<FormGroup
-														id='emailAddress'
-														label='Email address'
-														isFloating>
-														<Input
-															type='email'
-															placeholder='Email address'
-															autoComplete='email'
-															onChange={formik.handleChange}
-															onBlur={formik.handleBlur}
-															value={formik.values.emailAddress}
-															isValid={formik.isValid}
-															isTouched={formik.touched.emailAddress}
-															invalidFeedback={
-																formik.errors.emailAddress
-															}
-															validFeedback='Looks good!'
-														/>
-													</FormGroup>
-												</div>
-											</div>
-										</CardBody>
-									</Card>
+
 								</WizardItem>
 								<WizardItem id='step2' title='Address'>
 									<div className='row g-4'>
-										<div className='col-lg-12'>
-											<FormGroup
-												id='addressLine'
-												label='Address Line'
-												isFloating>
-												<Input
-													onChange={formik.handleChange}
-													onBlur={formik.handleBlur}
-													value={formik.values.addressLine}
-													isValid={formik.isValid}
-													isTouched={formik.touched.addressLine}
-													invalidFeedback={formik.errors.addressLine}
-													validFeedback='Looks good!'
-												/>
-											</FormGroup>
-										</div>
-										<div className='col-lg-12'>
-											<FormGroup
-												id='addressLine2'
-												label='Address Line 2'
-												isFloating>
-												<Input
-													onChange={formik.handleChange}
-													onBlur={formik.handleBlur}
-													value={formik.values.addressLine2}
-													isValid={formik.isValid}
-													isTouched={formik.touched.addressLine2}
-													invalidFeedback={formik.errors.addressLine2}
-													validFeedback='Looks good!'
-												/>
-											</FormGroup>
-										</div>
+										
+									
 
 										<div className='col-lg-6'>
-											<FormGroup id='city' label='City' isFloating>
+											<FormGroup id='city' label='Country' isFloating>
 												<Input
 													onChange={formik.handleChange}
 													onBlur={formik.handleBlur}
@@ -539,10 +570,41 @@ title:'General company information'
 												/>
 											</FormGroup>
 										</div>
+										<div className='col-lg-12'>
+											<FormGroup
+												id='addressLine'
+												label='Street address'
+												isFloating>
+												<Input
+													onChange={formik.handleChange}
+													onBlur={formik.handleBlur}
+													value={formik.values.addressLine}
+													isValid={formik.isValid}
+													isTouched={formik.touched.addressLine}
+													invalidFeedback={formik.errors.addressLine}
+													validFeedback='Looks good!'
+												/>
+											</FormGroup>
+										</div>
+										<div className='col-lg-12'>
+{										isLoaded ? (
+    <GoogleMap options={mapOptions}
+      mapContainerStyle={containerStyle}
+      center={center}
+      zoom={2}
+      onClick={handleMapClick}
+    >
+      {selectedLocation && <Marker position={selectedLocation} />}
+    </GoogleMap>
+  ) : (
+    <></>
+  )}
+
+										</div>
 									</div>
 								</WizardItem>
 								<WizardItem id='step3' title='Notifications'>
-								<Card>
+									<Card>
 										<CardBody>
 											<div className='row g-4 align-items-center'>
 												<div className='col-xl-auto'>
@@ -622,32 +684,12 @@ title:'General company information'
 														/>
 													</FormGroup>
 												</div>
-												<div className='col-12'>
-													<FormGroup
-														id='displayName'
-														label='Display Name'
-														isFloating
-														formText='This will be how your name will be displayed in the account section and in reviews'>
-														<Input
-															placeholder='Display Name'
-															autoComplete='username'
-															onChange={formik.handleChange}
-															onBlur={formik.handleBlur}
-															value={formik.values.displayName}
-															isValid={formik.isValid}
-															isTouched={formik.touched.displayName}
-															invalidFeedback={
-																formik.errors.displayName
-															}
-															validFeedback='Looks good!'
-														/>
-													</FormGroup>
-												</div>
+											
 											</div>
 										</CardBody>
 									</Card>
 
-									<Card className='mb-0'>
+									<Card >
 										<CardHeader>
 											<CardLabel icon='MarkunreadMailbox' iconColor='success'>
 												<CardTitle>Contact Information</CardTitle>
@@ -684,6 +726,60 @@ title:'General company information'
 														<Input
 															type='email'
 															placeholder='Email address'
+															autoComplete='email'
+															onChange={formik.handleChange}
+															onBlur={formik.handleBlur}
+															value={formik.values.emailAddress}
+															isValid={formik.isValid}
+															isTouched={formik.touched.emailAddress}
+															invalidFeedback={
+																formik.errors.emailAddress
+															}
+															validFeedback='Looks good!'
+														/>
+													</FormGroup>
+												</div>
+											</div>
+										</CardBody>
+									</Card>
+
+									<Card className='mb-0'>
+										<CardHeader>
+											<CardLabel icon='LockOpen' iconColor='primary'>
+												<CardTitle>Credentials</CardTitle>
+											</CardLabel>
+										</CardHeader>
+										<CardBody className='pt-0'>
+											<div className='row g-4'>
+												<div className='col-12'>
+													<FormGroup
+														id='phoneNumber'
+														label='Password'
+														isFloating>
+														<Input
+															placeholder='Password'
+															type='password'
+															autoComplete='tel'
+															onChange={formik.handleChange}
+															onBlur={formik.handleBlur}
+															value={formik.values.phoneNumber}
+															isValid={formik.isValid}
+															isTouched={formik.touched.phoneNumber}
+															invalidFeedback={
+																formik.errors.phoneNumber
+															}
+															validFeedback='Looks good!'
+														/>
+													</FormGroup>
+												</div>
+												<div className='col-12'>
+													<FormGroup
+														id='emailAddress'
+														label='Confirm password'
+														isFloating>
+														<Input
+															type='password'
+															placeholder='Confirm password'
 															autoComplete='email'
 															onChange={formik.handleChange}
 															onBlur={formik.handleBlur}

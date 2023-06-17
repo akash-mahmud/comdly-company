@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useTranslation } from 'next-i18next';
 import classNames from 'classnames';
 import { useTour } from '@reactour/tour';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import Button, { IButtonProps } from '../../../components/bootstrap/Button';
 import { HeaderRight } from '../../../layout/Header/Header';
 import OffCanvas, {
@@ -32,6 +32,7 @@ interface ICommonHeaderRightProps {
 }
 const CommonHeaderRight: FC<ICommonHeaderRightProps> = ({ beforeChildren, afterChildren }) => {
 	const router = useRouter();
+	const path = usePathname();
 	const { darkModeStatus, setDarkModeStatus } = useDarkMode();
 
 	const { fullScreenStatus, setFullScreenStatus } = useContext(ThemeContext);
@@ -48,7 +49,7 @@ const CommonHeaderRight: FC<ICommonHeaderRightProps> = ({ beforeChildren, afterC
 
 	const changeLanguage = (lng: ILang['key']['lng']) => {
 		i18n.changeLanguage(lng);
-		router.push(router.pathname, router.pathname, { locale: lng });
+		// router.push(path, path, { locale: lng });
 		showNotification(
 			<span className='d-flex align-items-center'>
 				<Icon icon={getLangWithKey(lng)?.icon} size='lg' className='me-1' />
@@ -122,7 +123,7 @@ const CommonHeaderRight: FC<ICommonHeaderRightProps> = ({ beforeChildren, afterC
 
 				{/* Lang Selector */}
 				<div className='col-auto'>
-					<Dropdown>
+					{/* <Dropdown>
 						<DropdownToggle hasIcon={false}>
 							{typeof getLangWithKey(router.locale as ILang['key']['lng'])?.icon ===
 								'undefined' ? (
@@ -157,7 +158,7 @@ const CommonHeaderRight: FC<ICommonHeaderRightProps> = ({ beforeChildren, afterC
 								</DropdownItem>
 							))}
 						</DropdownMenu>
-					</Dropdown>
+					</Dropdown> */}
 				</div>
 
 				{/* Quick Panel */}

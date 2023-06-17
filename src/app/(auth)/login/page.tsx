@@ -3,7 +3,6 @@ import React, { FC, useCallback, useContext, useState } from 'react';
 import type { NextPage } from 'next';
 import { GetStaticProps } from 'next';
 import Head from 'next/head';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/navigation';
 import { useFormik } from 'formik';
 import classNames from 'classnames';
@@ -46,7 +45,7 @@ const LoginHeader: FC<ILoginHeaderProps> = ({ isNewUser }) => {
 interface ILoginProps {
 	isSignUp?: boolean;
 }
-const Login: NextPage<ILoginProps> = ({ isSignUp }) => {
+const Login: NextPage<any> = ({ isSignUp }) => {
 	const router = useRouter();
 
 	const { setUser } = useContext(AuthContext);

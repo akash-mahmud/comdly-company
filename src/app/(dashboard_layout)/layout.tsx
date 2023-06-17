@@ -4,7 +4,7 @@ import { ThemeProvider } from 'react-jss';
 import { ToastContainer } from 'react-toastify';
 import { TourProvider } from '@reactour/tour';
 import { ReactNotifications } from 'react-notifications-component';
-import { appWithTranslation } from 'next-i18next';
+
 import { AuthContextProvider } from '../../context/authContext';
 import { ThemeContextProvider } from '../../context/themeContext';
 import useDarkMode from '../../hooks/useDarkMode';

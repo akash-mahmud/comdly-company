@@ -4,11 +4,8 @@ const withImages = require('next-images');
 const withInterceptStdout = require('next-intercept-stdout');
 const nextConfig = withInterceptStdout(
 	withImages({
-		experimental: {
-			images: {
-				allowFutureImage: true
-			}
-		},
+		
+		
 		images: {
 			disableStaticImages: true
 		},

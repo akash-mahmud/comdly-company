@@ -1,7 +1,6 @@
 import React from 'react';
 import Head from 'next/head';
 import { GetStaticProps } from 'next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import PageWrapper from '../layout/PageWrapper/PageWrapper';
 import { demoPagesMenu } from '../menu';
 import Page from '../layout/Page/Page';
@@ -49,11 +48,6 @@ const Page404 = () => {
 	);
 };
 
-export const getStaticProps: GetStaticProps = async ({ locale }) => ({
-	props: {
-		// @ts-ignore
-		...(await serverSideTranslations(locale, ['common', 'menu'])),
-	},
-});
+
 
 export default Page404;

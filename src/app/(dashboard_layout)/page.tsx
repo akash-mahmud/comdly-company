@@ -3,7 +3,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import type { NextPage } from 'next';
 import { GetStaticProps } from 'next';
 import Head from 'next/head';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useTour } from '@reactour/tour';
 import Button, { ButtonGroup } from '../../components/bootstrap/Button';
 import PageWrapper from '../../layout/PageWrapper/PageWrapper';
