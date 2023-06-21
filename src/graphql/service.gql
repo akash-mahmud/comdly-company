@@ -1,0 +1,53 @@
+query FetchAllService($page: Int, $limit: Int, $filters: ServiceFilterInput) {
+  fetchAllService(page: $page, limit: $limit, filters: $filters) {
+    message
+    pages
+        total
+
+    result {
+      companyId
+      createdAt
+      description
+      durationPreiod
+      durationType
+      id
+      images
+      name
+      price
+      serviceCategoryid
+      slug
+      updatedAt
+    }
+  }
+}
+
+# mutation CreateService($service: ServiceInput) {
+#   createService(service: $service) {
+#     message
+#     success
+#   }
+# }
+
+
+
+query FetchSingleService( $id: String, $slug: String) {
+  
+  
+  fetchSingleService(id: $id, slug: $slug) {
+    message
+    result {
+      companyId
+      createdAt
+      description
+      durationPreiod
+      durationType
+      id
+      images
+      name
+      price
+      serviceCategoryid
+      slug
+      updatedAt
+    }
+  }
+}

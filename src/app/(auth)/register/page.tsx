@@ -1,11 +1,9 @@
 'use client'
 import React, { FC, useState } from 'react';
 import type { NextPage } from 'next';
-import { GetStaticProps } from 'next';
 import Head from 'next/head';
-import CountryPhoneInput, { ConfigProvider } from 'antd-country-phone-input';
+import CountryPhoneInput, { ConfigProvider, CountryPhoneInputValue } from 'antd-country-phone-input';
 import en from 'world_countries_lists/data/countries/en/world.json';
-
 import { useRouter } from 'next/navigation';
 import { useFormik } from 'formik';
 import showNotification from '../../../components/extras/showNotification';
@@ -13,22 +11,14 @@ import Icon from '../../../components/icon/Icon';
 import editPasswordValidate from '../../../common/function/validation/editPasswordValidate';
 import PageWrapper from '../../../layout/PageWrapper/PageWrapper';
 import { demoPagesMenu } from '../../../menu';
-import SubHeader, {
-	SubHeaderLeft,
-	SubHeaderRight,
-	SubheaderSeparator,
-} from '../../../layout/SubHeader/SubHeader';
-import {  Steps } from 'antd';
-
+import { Spin, Steps } from 'antd';
 import Button from '../../../components/bootstrap/Button';
 import User1Img from '../../../assets/img/wanna/wanna2.png';
 import Avatar from '../../../components/Avatar';
 import Page from '../../../layout/Page/Page';
 import Card, {
 	CardBody,
-	CardFooter,
-	CardFooterLeft,
-	CardFooterRight,
+
 	CardHeader,
 	CardLabel,
 	CardTitle,
@@ -37,24 +27,22 @@ import Wizard, { WizardItem } from '../../../components/Wizard';
 import Input from '../../../components/bootstrap/forms/Input';
 import FormGroup from '../../../components/bootstrap/forms/FormGroup';
 import Select from '../../../components/bootstrap/forms/Select';
-import Label from '../../../components/bootstrap/forms/Label';
-import Checks, { ChecksGroup } from '../../../components/bootstrap/forms/Checks';
-import CommonMyWallet from '../../../common/partial/CommonMyWallet';
-import SvgCustomApple from '@/components/icon/svg-icons/CustomApple';
-import { FmdGood, LocationSearching, Login, Shop, ShoppingBag, ViewAgenda, Work } from '@/components/icon/material-icons';
-import SvgShop from '@/components/icon/material-icons/Shop';
-import SvgShoppingBag from '@/components/icon/material-icons/ShoppingBag';
+
+import { FmdGood,  Login,  ViewAgenda, Work } from '@/components/icon/material-icons';
+
 import Textarea from '@/components/bootstrap/forms/Textarea';
 import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
+import { useAppDispatch, useAppSelector } from '@/store';
+import { register } from '@/store/slices/auth/authSlice';
 
 const containerStyle = {
-  width: '100%',
-  height: '400px',
+	width: '100%',
+	height: '400px',
 };
 
 const center = {
-  lat: 0,
-  lng: 0,
+	lat: 0,
+	lng: 0,
 };
 interface IPreviewItemProps {
 	title: string;
@@ -70,110 +58,150 @@ const PreviewItem: FC<IPreviewItemProps> = ({ title, value }) => {
 };
 
 interface IValues {
-	firstName: string;
-	lastName: string;
-	displayName: string;
-	emailAddress: string;
-	addressLine: string;
-	phoneNumber: string;
-	addressLine2: string;
-	city: string;
-	state: string;
-	zip: string;
-	emailNotification: string[];
-	pushNotification: string[];
-	currentPassword?: string;
-	newPassword?: string;
-	confirmPassword?: string;
-	company: {
+
+	userInput: {
+		email: string
+		firstname: string,
+		lastname: string,
+		password: string,
+		phoneNumber: string
+
+		confirmPassword?: string;
+	}
+	ownerInput: {
+		name: string
+	},
+
+	locationInput: {
+		country: string
+		state: string
+		city: string
+
+		zip: string
+		streetAddress: string
+	},
+	geoLocationInput: {
+		longitude: number
+		latitude: number
+	},
+
+
+
+	companyInput: {
 		name: string,
 		slug: string,
 		description: string,
+		logo: string,
+		avater: string
+
 	}
+
 }
+
 const validate = (values: IValues) => {
 	const errors: IValues = {
-		firstName: '',
-		lastName: '',
-		displayName: '',
-		emailAddress: '',
-		currentPassword: '',
-		newPassword: '',
-		confirmPassword: '',
-		addressLine: '',
-		addressLine2: '',
-		phoneNumber: '',
-		city: '',
-		state: '',
-		zip: '',
-		emailNotification: [],
-		pushNotification: [],
-		company: {
+
+
+		userInput: {
+			email: '',
+			firstname: '',
+			lastname: '',
+			password: '',
+
+			phoneNumber: '',
+			confirmPassword: ''
+		},
+		ownerInput: {
+			name: ''
+		},
+
+		locationInput: {
+			country: '',
+			state: '',
+			city: '',
+
+			zip: '',
+			streetAddress: ''
+		},
+		geoLocationInput: {
+			longitude: 0,
+			latitude: 0
+		},
+
+
+
+		companyInput: {
 			name: '',
 			slug: '',
-			description: ''
+			description: '',
+			logo: '',
+			avater: ''
+
 		}
+
+
+
 	};
-	if (!values.firstName) {
-		errors.firstName = 'Required';
-	} else if (values.firstName.length < 3) {
-		errors.firstName = 'Must be 3 characters or more';
-	} else if (values.firstName.length > 20) {
-		errors.firstName = 'Must be 20 characters or less';
+	if (!values.userInput.firstname) {
+		errors.userInput.firstname = 'Required';
+	} else if (values.userInput.firstname.length < 3) {
+		errors.userInput.firstname = 'Must be 3 characters or more';
+	} else if (values.userInput.firstname.length > 20) {
+		errors.userInput.firstname = 'Must be 20 characters or less';
 	}
 
-	if (!values.lastName) {
-		errors.lastName = 'Required';
-	} else if (values.lastName.length < 3) {
-		errors.lastName = 'Must be 3 characters or more';
-	} else if (values.lastName.length > 20) {
-		errors.lastName = 'Must be 20 characters or less';
+	if (!values.userInput.lastname) {
+		errors.userInput.lastname = 'Required';
+	} else if (values.userInput.lastname.length < 3) {
+		errors.userInput.lastname = 'Must be 3 characters or more';
+	} else if (values.userInput.lastname.length > 20) {
+		errors.userInput.lastname = 'Must be 20 characters or less';
 	}
 
-	if (!values.displayName) {
-		errors.displayName = 'Required';
-	} else if (values.displayName.length > 30) {
-		errors.displayName = 'Must be 20 characters or less';
+	if (!values.ownerInput.name) {
+		errors.ownerInput.name = 'Required';
+	} else if (values.ownerInput.name.length > 30) {
+		errors.ownerInput.name = 'Must be 20 characters or less';
 	}
 
-	if (!values.emailAddress) {
-		errors.emailAddress = 'Required';
-	} else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.emailAddress)) {
-		errors.emailAddress = 'Invalid email address';
+	if (!values.userInput.email) {
+		errors.userInput.email = 'Required';
+	} else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.userInput.email)) {
+		errors.userInput.email = 'Invalid email address';
 	}
 
-	if (values.currentPassword) {
-		if (!values.newPassword) {
-			errors.newPassword = 'Please provide a valid password.';
+	if (values.userInput.password) {
+		if (!values.userInput.password) {
+			errors.userInput.password = 'Please provide a valid password.';
 		} else {
-			errors.newPassword = '';
+			errors.userInput.password = '';
 
-			if (values.newPassword.length < 8 || values.newPassword.length > 32) {
-				errors.newPassword +=
+			if (values.userInput.password.length < 8 || values.userInput.password.length > 32) {
+				errors.userInput.password +=
 					'The password must be at least 8 characters long, but no more than 32. ';
 			}
-			if (!/[0-9]/g.test(values.newPassword)) {
-				errors.newPassword +=
+			if (!/[0-9]/g.test(values.userInput.password)) {
+				errors.userInput.password +=
 					'Require that at least one digit appear anywhere in the string. ';
 			}
-			if (!/[a-z]/g.test(values.newPassword)) {
-				errors.newPassword +=
+			if (!/[a-z]/g.test(values.userInput.password)) {
+				errors.userInput.password +=
 					'Require that at least one lowercase letter appear anywhere in the string. ';
 			}
-			if (!/[A-Z]/g.test(values.newPassword)) {
-				errors.newPassword +=
+			if (!/[A-Z]/g.test(values.userInput.password)) {
+				errors.userInput.password +=
 					'Require that at least one uppercase letter appear anywhere in the string. ';
 			}
-			if (!/[!@#$%^&*)(+=._-]+$/g.test(values.newPassword)) {
-				errors.newPassword +=
+			if (!/[!@#$%^&*)(+=._-]+$/g.test(values.userInput.password)) {
+				errors.userInput.password +=
 					'Require that at least one special character appear anywhere in the string. ';
 			}
 		}
 
-		if (!values.confirmPassword) {
-			errors.confirmPassword = 'Please provide a valid password.';
-		} else if (values.newPassword !== values.confirmPassword) {
-			errors.confirmPassword = 'Passwords do not match.';
+		if (!values.userInput.confirmPassword) {
+			errors.userInput.confirmPassword = 'Please provide a valid password.';
+		} else if (values.userInput.password !== values.userInput.confirmPassword) {
+			errors.userInput.confirmPassword = 'Passwords do not match.';
 		}
 	}
 
@@ -183,7 +211,8 @@ const validate = (values: IValues) => {
 const Index: NextPage = () => {
 	const router = useRouter();
 	const [activeItemIndex, setActiveItemIndex] = useState(0);
-
+	const [countryCodedPhoneNumber, setcountryCodedPhoneNumber] = useState<CountryPhoneInputValue>()
+const [loading, setLoading] = useState(false)
 	const TABS = {
 		ACCOUNT_DETAIL: 'Account Details',
 		PASSWORD: 'Password',
@@ -196,86 +225,104 @@ const Index: NextPage = () => {
 		{ id: 2, name: 'New Customer' },
 		{ id: 3, name: 'Order Status' },
 	];
+const dispatch = useAppDispatch()
 
 	const formik = useFormik({
 		initialValues: {
-			firstName: 'John',
-			lastName: 'Doe',
-			displayName: 'johndoe',
-			emailAddress: 'johndoe@site.com',
-			phoneNumber: '',
-			addressLine: '',
-			addressLine2: '',
-			city: '',
-			state: '',
-			zip: '',
-			emailNotification: ['2'],
-			pushNotification: ['1', '2', '3'],
-			company: {
+			userInput: {
+				email: '',
+				firstname: '',
+				lastname: '',
+				password: '',
+				phoneNumber: '',
+
+				confirmPassword: ''
+			},
+			ownerInput: {
+				name: ''
+			},
+
+			locationInput: {
+				country: '',
+				state: '',
+				city: '',
+
+				zip: '',
+				streetAddress: ''
+			},
+			geoLocationInput: {
+				longitude: 0,
+				latitude: 0
+			},
+
+
+
+			companyInput: {
 				name: '',
 				slug: '',
-				description: ''
+				description: '',
+				logo: 'https://assets.entrepreneur.com/franchise/282495-avatar-image-1596119090.jpeg',
+				avater: 'https://i.pinimg.com/736x/aa/92/89/aa9289de1ed2865bccd7c7457f246482--fun-restaurants-kentucky-fried.jpg'
+
 			}
 		},
 		validate,
-		onSubmit: () => {
-			showNotification(
-				<span className='d-flex align-items-center'>
-					<Icon icon='Info' size='lg' className='me-1' />
-					<span>Updated Successfully</span>
-				</span>,
-				"The user's account details have been successfully updated.",
-			);
+		onSubmit: async () => {
+			setLoading(true)
+			try {
+				const data = formik.values
+				console.log(data);
+				console.log(countryCodedPhoneNumber);
+	data.userInput.phoneNumber =`${countryCodedPhoneNumber?.code} ${countryCodedPhoneNumber?.phone}`
+	data.geoLocationInput.latitude = selectedLocation?.lat as number
+	data.geoLocationInput.longitude = selectedLocation?.lng as number
+	await dispatch(register(data))
+			
+			} catch (error) {
+				console.log(error);
+				
+			}
+			setLoading(false)
+
+		
 		},
 	});
 
-	const formikPassword = useFormik({
-		initialValues: {
-			currentPassword: '',
-			newPassword: '',
-			confirmPassword: '',
-		},
-		validate: editPasswordValidate,
-		onSubmit: () => {
-			showNotification(
-				<span className='d-flex align-items-center'>
-					<Icon icon='Info' size='lg' className='me-1' />
-					<span>Updated Successfully</span>
-				</span>,
-				"The user's password have been successfully updated.",
-			);
-		},
-	});
-	interface location{
-		lat:number
-		lng:number
+
+	interface location {
+		lat: number
+		lng: number
 	}
-	const [selectedLocation, setSelectedLocation] = useState<null|location>(null);
+	const [selectedLocation, setSelectedLocation] = useState<null | location>(null);
 
 	const { isLoaded } = useJsApiLoader({
-	  googleMapsApiKey: 'AIzaSyBU9Sja1_zSeP3oQySDLYZ7FVYWrq-kGKU',
+		googleMapsApiKey: 'AIzaSyBU9Sja1_zSeP3oQySDLYZ7FVYWrq-kGKU',
 	});
-  
-	const handleMapClick = (event:google.maps.MapMouseEvent) => {
-	  setSelectedLocation({
-		lat: event?.latLng?.lat() as number,
-		lng: event?.latLng?.lng() as number,
-	  });
+
+	const handleMapClick = (event: google.maps.MapMouseEvent) => {
+		setSelectedLocation({
+			lat: event?.latLng?.lat() as number,
+			lng: event?.latLng?.lng() as number,
+		});
+
 	};
 	const mapOptions = {
 		fullscreenControl: false,
 		mapTypeControl: false,
 		zoomControl: false,
 		streetViewControl: false,
+
+	};
+
 	
-	  };
 	return (
+		
 		<PageWrapper>
 			<Head>
 				<title>{demoPagesMenu.editPages.subMenu.editWizard.text}</title>
 			</Head>
-
-			<Page>
+<Spin spinning={loading}>
+<Page>
 				<div className='row h-100 pb-3'>
 					<div className='col-lg-4 col-md-6'>
 						<Card stretch>
@@ -334,7 +381,7 @@ const Index: NextPage = () => {
 								<WizardItem id='step1' title='Account Detail'>
 									<Card>
 										<CardBody>
-											
+
 											<div className='row g-4 align-items-center'>
 												<div className='col-xl-auto'>
 													<Avatar src={User1Img} />
@@ -364,7 +411,7 @@ const Index: NextPage = () => {
 												</div>
 											</div>
 
-										
+
 										</CardBody>
 									</Card>
 
@@ -382,16 +429,16 @@ const Index: NextPage = () => {
 														label='Company Name'
 														isFloating>
 														<Input
-															name='company.name'
-															placeholder='First Name'
+															name='companyInput.name'
+															placeholder=' Name'
 															autoComplete='additional-name'
 															onChange={formik.handleChange}
 															onBlur={formik.handleBlur}
-															value={formik.values.company.name}
+															value={formik.values.companyInput.name}
 															isValid={formik.isValid}
-															isTouched={formik.touched.company?.name}
+															isTouched={formik.touched.companyInput?.name}
 															invalidFeedback={
-																formik.errors.company?.name
+																formik.errors.companyInput?.name
 															}
 															validFeedback='Looks good!'
 														/>
@@ -405,14 +452,15 @@ const Index: NextPage = () => {
 
 														isFloating>
 														<Input
+														name='companyInput.slug'
 															placeholder='company slug'
 															autoComplete='family-name'
 															onChange={formik.handleChange}
 															onBlur={formik.handleBlur}
-															value={formik.values.company.slug}
+															value={formik.values.companyInput.slug}
 															isValid={formik.isValid}
-															isTouched={formik.touched.company?.slug}
-															invalidFeedback={formik.errors.company?.slug}
+															isTouched={formik.touched.companyInput?.slug}
+															invalidFeedback={formik.errors.companyInput?.slug}
 															validFeedback='Looks good!'
 
 														/>
@@ -425,8 +473,10 @@ const Index: NextPage = () => {
 														formText='You can change this later'
 
 														isFloating>
-														<ConfigProvider locale={en}>
-															<CountryPhoneInput inline />
+														<ConfigProvider  locale={en}>
+															<CountryPhoneInput autoFocus={false} type='number' autoComplete='off' id='phoneNumber' name='phoneNumber'  inline onChange={(number)=> {
+																setcountryCodedPhoneNumber(number) 
+															}}/>
 														</ConfigProvider>
 														{/* <Input
 															placeholder='company slug'
@@ -458,10 +508,10 @@ const Index: NextPage = () => {
 																value: 'Listing'
 															}]}
 															onBlur={formik.handleBlur}
-															value={formik.values.company.slug}
+															value={formik.values.companyInput.slug}
 															isValid={formik.isValid}
-															isTouched={formik.touched.company?.slug}
-															invalidFeedback={formik.errors.company?.slug}
+															isTouched={formik.touched.companyInput?.slug}
+															invalidFeedback={formik.errors.companyInput?.slug}
 															validFeedback='Looks good!' ariaLabel={''}
 														/>
 													</FormGroup>
@@ -473,16 +523,18 @@ const Index: NextPage = () => {
 														isFloating
 														formText='This will be how your name will be displayed in the account section and in reviews'>
 														<Textarea
+																											name='companyInput.description'
+
 															height='100px'
 															placeholder='Display Name'
 															autoComplete='username'
 															onChange={formik.handleChange}
 															onBlur={formik.handleBlur}
-															value={formik.values.company.description}
+															value={formik.values.companyInput.description}
 															isValid={formik.isValid}
-															isTouched={formik.touched.company?.description}
+															isTouched={formik.touched.companyInput?.description}
 															invalidFeedback={
-																formik.errors.company?.description
+																formik.errors.companyInput?.description
 															}
 															validFeedback='Looks good!'
 														/>
@@ -492,7 +544,7 @@ const Index: NextPage = () => {
 											</div>
 											<div className='row g-4 align-items-center '>
 												<div className='col-xl-auto'>
-													<Avatar src={User1Img} size={80}/>
+													<Avatar src={User1Img} size={80} />
 												</div>
 												<div className='col-xl'>
 													<div className='row g-4'>
@@ -525,25 +577,40 @@ const Index: NextPage = () => {
 								</WizardItem>
 								<WizardItem id='step2' title='Address'>
 									<div className='row g-4'>
-										
-									
 
-										<div className='col-lg-6'>
+
+									<div className='col-lg-6'>
 											<FormGroup id='city' label='Country' isFloating>
 												<Input
+												name='locationInput.country'
 													onChange={formik.handleChange}
 													onBlur={formik.handleBlur}
-													value={formik.values.city}
+													value={formik.values.locationInput.country}
 													isValid={formik.isValid}
-													isTouched={formik.touched.city}
-													invalidFeedback={formik.errors.city}
+													isTouched={formik.touched?.locationInput?.country}
+													invalidFeedback={formik.errors?.locationInput?.country}
 													validFeedback='Looks good!'
 												/>
 											</FormGroup>
 										</div>
-										<div className='col-md-3'>
+										<div className='col-lg-6'>
+											<FormGroup id='city' label='City' isFloating>
+												<Input
+												name='locationInput.city'
+													onChange={formik.handleChange}
+													onBlur={formik.handleBlur}
+													value={formik.values.locationInput.city}
+													isValid={formik.isValid}
+													isTouched={formik.touched?.locationInput?.city}
+													invalidFeedback={formik.errors?.locationInput?.city}
+													validFeedback='Looks good!'
+												/>
+											</FormGroup>
+										</div>
+										<div className='col-md-4'>
 											<FormGroup id='state' label='State' isFloating>
 												<Select
+												name='locationInput.state'
 													ariaLabel='State'
 													placeholder='Choose...'
 													list={[
@@ -552,59 +619,61 @@ const Index: NextPage = () => {
 													]}
 													onChange={formik.handleChange}
 													onBlur={formik.handleBlur}
-													value={formik.values.state}
+													value={formik.values.locationInput.state}
 													isValid={formik.isValid}
-													isTouched={formik.touched.state}
-													invalidFeedback={formik.errors.state}
+													isTouched={formik.touched?.locationInput?.state}
+													invalidFeedback={formik.errors?.locationInput?.state}
 												/>
 											</FormGroup>
 										</div>
-										<div className='col-md-3'>
+										<div className='col-md-4'>
 											<FormGroup id='zip' label='Zip' isFloating>
 												<Input
+												name='locationInput.zip'
 													onChange={formik.handleChange}
 													onBlur={formik.handleBlur}
-													value={formik.values.zip}
+													value={formik.values?.locationInput?.zip}
 													isValid={formik.isValid}
-													isTouched={formik.touched.zip}
-													invalidFeedback={formik.errors.zip}
+													isTouched={formik.touched?.locationInput?.zip}
+													invalidFeedback={formik.errors?.locationInput?.zip}
 												/>
 											</FormGroup>
 										</div>
-										<div className='col-lg-12'>
+										<div className='col-lg-4'>
 											<FormGroup
 												id='addressLine'
 												label='Street address'
 												isFloating>
 												<Input
+												name='locationInput.streetAddress'
 													onChange={formik.handleChange}
 													onBlur={formik.handleBlur}
-													value={formik.values.addressLine}
+													value={formik.values?.locationInput?.streetAddress}
 													isValid={formik.isValid}
-													isTouched={formik.touched.addressLine}
-													invalidFeedback={formik.errors.addressLine}
+													isTouched={formik.touched?.locationInput?.streetAddress}
+													invalidFeedback={formik.errors?.locationInput?.streetAddress}
 													validFeedback='Looks good!'
 												/>
 											</FormGroup>
 										</div>
 										<div className='col-lg-12'>
-{										isLoaded ? (
-    <GoogleMap options={mapOptions}
-      mapContainerStyle={containerStyle}
-      center={center}
-      zoom={2}
-      onClick={handleMapClick}
-    >
-      {selectedLocation && <Marker position={selectedLocation} />}
-    </GoogleMap>
-  ) : (
-    <></>
-  )}
+											{isLoaded ? (
+												<GoogleMap options={mapOptions}
+													mapContainerStyle={containerStyle}
+													center={center}
+													zoom={2}
+													onClick={handleMapClick}
+												>
+													{selectedLocation && <Marker position={selectedLocation} />}
+												</GoogleMap>
+											) : (
+												<></>
+											)}
 
 										</div>
 									</div>
 								</WizardItem>
-								<WizardItem id='step3' title='Notifications'>
+								<WizardItem id='step3' title='Personal Information'>
 									<Card>
 										<CardBody>
 											<div className='row g-4 align-items-center'>
@@ -653,15 +722,16 @@ const Index: NextPage = () => {
 														label='First Name'
 														isFloating>
 														<Input
+														name='userInput.firstname'
 															placeholder='First Name'
 															autoComplete='additional-name'
 															onChange={formik.handleChange}
 															onBlur={formik.handleBlur}
-															value={formik.values.firstName}
+															value={formik.values.userInput.firstname}
 															isValid={formik.isValid}
-															isTouched={formik.touched.firstName}
+															isTouched={formik.touched.userInput?.firstname}
 															invalidFeedback={
-																formik.errors.firstName
+																formik.errors.userInput?.firstname
 															}
 															validFeedback='Looks good!'
 														/>
@@ -673,19 +743,39 @@ const Index: NextPage = () => {
 														label='Last Name'
 														isFloating>
 														<Input
+														name='userInput.lastname'
 															placeholder='Last Name'
 															autoComplete='family-name'
 															onChange={formik.handleChange}
 															onBlur={formik.handleBlur}
-															value={formik.values.lastName}
+															value={formik.values.userInput?.lastname}
 															isValid={formik.isValid}
-															isTouched={formik.touched.lastName}
-															invalidFeedback={formik.errors.lastName}
+															isTouched={formik.touched.userInput?.lastname}
+															invalidFeedback={formik.errors.userInput?.lastname}
 															validFeedback='Looks good!'
 														/>
 													</FormGroup>
 												</div>
-											
+												<div className='col-md-12'>
+													<FormGroup
+														id='ownername'
+														label='Owner Name'
+														isFloating>
+														<Input
+															placeholder='Owner Name'
+															name='ownerInput.name'
+
+															autoComplete='family-name'
+															onChange={formik.handleChange}
+															onBlur={formik.handleBlur}
+															value={formik.values.ownerInput?.name}
+															isValid={formik.isValid}
+															isTouched={formik.touched.ownerInput?.name}
+															invalidFeedback={formik.errors.ownerInput?.name}
+															validFeedback='Looks good!'
+														/>
+													</FormGroup>
+												</div>
 											</div>
 										</CardBody>
 									</Card>
@@ -706,14 +796,15 @@ const Index: NextPage = () => {
 														<Input
 															placeholder='Phone Number'
 															type='tel'
+															name='userInput.phoneNumber'
 															autoComplete='tel'
 															onChange={formik.handleChange}
 															onBlur={formik.handleBlur}
-															value={formik.values.phoneNumber}
+															value={formik.values?.userInput.phoneNumber}
 															isValid={formik.isValid}
-															isTouched={formik.touched.phoneNumber}
+															isTouched={formik.touched?.userInput?.phoneNumber}
 															invalidFeedback={
-																formik.errors.phoneNumber
+																formik.errors?.userInput?.phoneNumber
 															}
 															validFeedback='Looks good!'
 														/>
@@ -725,16 +816,17 @@ const Index: NextPage = () => {
 														label='Email address'
 														isFloating>
 														<Input
+														name='userInput.email'
 															type='email'
 															placeholder='Email address'
 															autoComplete='email'
 															onChange={formik.handleChange}
 															onBlur={formik.handleBlur}
-															value={formik.values.emailAddress}
+															value={formik.values.userInput?.email}
 															isValid={formik.isValid}
-															isTouched={formik.touched.emailAddress}
+															isTouched={formik.touched.userInput?.email}
 															invalidFeedback={
-																formik.errors.emailAddress
+																formik.errors.userInput?.email
 															}
 															validFeedback='Looks good!'
 														/>
@@ -758,16 +850,17 @@ const Index: NextPage = () => {
 														label='Password'
 														isFloating>
 														<Input
+														name='userInput.password'
 															placeholder='Password'
 															type='password'
 															autoComplete='tel'
 															onChange={formik.handleChange}
 															onBlur={formik.handleBlur}
-															value={formik.values.phoneNumber}
+															value={formik.values?.userInput?.password}
 															isValid={formik.isValid}
-															isTouched={formik.touched.phoneNumber}
+															isTouched={formik.touched?.userInput?.password}
 															invalidFeedback={
-																formik.errors.phoneNumber
+																formik.errors?.userInput?.password
 															}
 															validFeedback='Looks good!'
 														/>
@@ -779,16 +872,17 @@ const Index: NextPage = () => {
 														label='Confirm password'
 														isFloating>
 														<Input
+														name='userInput.confirmPassword'
 															type='password'
 															placeholder='Confirm password'
 															autoComplete='email'
 															onChange={formik.handleChange}
 															onBlur={formik.handleBlur}
-															value={formik.values.emailAddress}
+															value={formik.values.userInput?.confirmPassword}
 															isValid={formik.isValid}
-															isTouched={formik.touched.emailAddress}
+															isTouched={formik.touched.userInput?.confirmPassword}
 															invalidFeedback={
-																formik.errors.emailAddress
+																formik.errors.userInput?.confirmPassword
 															}
 															validFeedback='Looks good!'
 														/>
@@ -805,169 +899,53 @@ const Index: NextPage = () => {
 										</div>
 										<PreviewItem
 											title='First Name'
-											value={formik.values.firstName}
+											value={formik.values.userInput.firstname}
 										/>
 										<PreviewItem
 											title='Last Name'
-											value={formik.values.lastName}
+											value={formik.values.userInput.lastname}
 										/>
 										<PreviewItem
 											title='Display Name'
-											value={formik.values.displayName}
+											value={formik.values.ownerInput.name}
 										/>
 										<div className='col-9 offset-3'>
 											<h4 className='mt-4'>Contact Information</h4>
 										</div>
 										<PreviewItem
 											title='Phone Number'
-											value={formik.values.phoneNumber}
+											value={formik.values.userInput.phoneNumber}
 										/>
 										<PreviewItem
 											title='Email Address'
-											value={formik.values.emailAddress}
+											value={formik.values.userInput.email}
 										/>
 										<div className='col-9 offset-3'>
 											<h3 className='mt-4'>Address</h3>
 										</div>
 										<PreviewItem
 											title='Address Line'
-											value={formik.values.addressLine}
+											value={formik.values.locationInput.streetAddress}
 										/>
-										<PreviewItem
-											title='Address Line 2'
-											value={formik.values.addressLine2}
-										/>
-										<PreviewItem title='City' value={formik.values.city} />
-										<PreviewItem title='State' value={formik.values.state} />
-										<PreviewItem title='ZIP' value={formik.values.zip} />
+
+										<PreviewItem title='City' value={formik.values.locationInput.city} />
+										<PreviewItem title='State' value={formik.values.locationInput.state} />
+										<PreviewItem title='ZIP' value={formik.values.locationInput.zip} />
 										<div className='col-9 offset-3'>
 											<h4 className='mt-4'>Notification</h4>
 										</div>
-										<PreviewItem
-											title='Email Notifications'
-											value={notificationTypes.map(
-												(cat) =>
-													formik.values.emailNotification.includes(
-														cat.id.toString(),
-													) && `${cat.name}, `,
-											)}
-										/>
-										<PreviewItem
-											title='Push Notifications'
-											value={notificationTypes.map(
-												(cat) =>
-													formik.values.pushNotification.includes(
-														cat.id.toString(),
-													) && `${cat.name}, `,
-											)}
-										/>
+
+
 									</div>
 								</WizardItem>
 							</Wizard>
 						)}
-						{TABS.PASSWORD === activeTab && (
-							<Card
-								stretch
-								tag='form'
-								noValidate
-								onSubmit={formikPassword.handleSubmit}>
-								<CardHeader>
-									<CardLabel icon='LocalPolice' iconColor='info'>
-										<CardTitle>{TABS.PASSWORD}</CardTitle>
-									</CardLabel>
-								</CardHeader>
-								<CardBody className='pb-0' isScrollable>
-									<div className='row g-4'>
-										<div className='col-12'>
-											<FormGroup
-												id='currentPassword'
-												label='Current password'
-												isFloating>
-												<Input
-													type='password'
-													placeholder='Current password'
-													autoComplete='current-password'
-													onChange={formikPassword.handleChange}
-													value={formikPassword.values.currentPassword}
-												/>
-											</FormGroup>
-										</div>
-										<div className='col-12'>
-											<FormGroup
-												id='newPassword'
-												label='New password'
-												isFloating>
-												<Input
-													type='password'
-													placeholder='New password'
-													autoComplete='new-password'
-													onChange={formikPassword.handleChange}
-													onBlur={formikPassword.handleBlur}
-													value={formikPassword.values.newPassword}
-													isValid={formikPassword.isValid}
-													isTouched={formikPassword.touched.newPassword}
-													invalidFeedback={
-														formikPassword.errors.newPassword
-													}
-													validFeedback='Looks good!'
-												/>
-											</FormGroup>
-										</div>
-										<div className='col-12'>
-											<FormGroup
-												id='confirmPassword'
-												label='Confirm new password'
-												isFloating>
-												<Input
-													type='password'
-													placeholder='Confirm new password'
-													autoComplete='new-password'
-													onChange={formikPassword.handleChange}
-													onBlur={formikPassword.handleBlur}
-													value={formikPassword.values.confirmPassword}
-													isValid={formikPassword.isValid}
-													isTouched={
-														formikPassword.touched.confirmPassword
-													}
-													invalidFeedback={
-														formikPassword.errors.confirmPassword
-													}
-													validFeedback='Looks good!'
-												/>
-											</FormGroup>
-										</div>
-									</div>
-								</CardBody>
-								<CardFooter>
-									<CardFooterLeft>
-										<Button
-											color='info'
-											isLink
-											type='reset'
-											onClick={formikPassword.resetForm}>
-											Reset
-										</Button>
-									</CardFooterLeft>
-									<CardFooterRight>
-										<Button
-											type='submit'
-											icon='Save'
-											color='info'
-											isOutline
-											isDisable={
-												!formikPassword.isValid &&
-												!!formikPassword.submitCount
-											}>
-											Save
-										</Button>
-									</CardFooterRight>
-								</CardFooter>
-							</Card>
-						)}
-						{TABS.MY_WALLET === activeTab && <CommonMyWallet />}
+
 					</div>
 				</div>
 			</Page>
+</Spin>
+			
 		</PageWrapper>
 	);
 };

@@ -4,6 +4,7 @@ import Head from 'next/head';
 import PageWrapper from '@/layout/PageWrapper/PageWrapper';
 import { pageLayoutTypesPagesMenu } from '@/menu';
 import Page from '@/layout/Page/Page';
+import GuestGard from '@/auth/GuestGard';
 
 const Index = ({
 	children,
@@ -17,7 +18,10 @@ const Index = ({
 			</Head>
 			<Page>
 				<div className='row d-flex align-items-center h-100'>
+					<GuestGard>
+
 					{children}
+					</GuestGard>
 				</div>
 			</Page>
 		</PageWrapper>

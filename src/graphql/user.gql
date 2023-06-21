@@ -1,0 +1,54 @@
+mutation Register($user: UserInput) {
+  register(user: $user) {
+    __typename
+    message
+  }
+}
+
+query Me {
+  me {
+    id
+    firstname
+    lastname
+    email
+  }
+}
+
+mutation Login($user: LoginInput) {
+  login(user: $user) {
+    accessToken
+    message
+    user {
+      id
+      firstname
+      lastname
+      email
+      role
+    }
+    isAuthenticated
+    success
+  }
+}
+mutation CreateCompanyWithOwner($userInput: UserInput, $ownerInput: OwnerInput, $companyInput: CompanyInput, $locationInput: LocationInput, $geoLocationInput: GeoLocationInput) {
+  createCompanyWithOwner(userInput: $userInput, ownerInput: $ownerInput, companyInput: $companyInput, locationInput: $locationInput, geoLocationInput: $geoLocationInput) {
+    accessToken
+    isAuthenticated
+    message
+    success
+    user {
+      email
+      firstname
+      id
+      lastname
+      role
+      companyRole
+    }
+  }
+}
+# mutation AddPaymentMethod($token: String!) {
+#   addPaymentMethod(token: $token)
+# }
+
+# mutation EmailVerification($token: String!) {
+#   emailVerification(token: $token)
+# }

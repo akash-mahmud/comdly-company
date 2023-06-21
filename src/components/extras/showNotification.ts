@@ -1,3 +1,4 @@
+'use client'
 import { Store } from 'react-notifications-component';
 
 const SETTINGS = {
@@ -19,13 +20,14 @@ const showNotification = (
 	message: string | JSX.Element,
 	type = 'default',
 ) => {
-	Store.addNotification({
-		title,
-		message,
-		// @ts-ignore
-		type,
-		...SETTINGS,
-	});
+	return
+	// Store.addNotification({
+	// 	title,
+	// 	message,
+	// 	// @ts-ignore
+	// 	type,
+	// 	...SETTINGS,
+	// });
 };
 
 export default showNotification;

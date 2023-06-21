@@ -41,92 +41,19 @@ const DefaultAside = () => {
 			</AsideHead>
 			<AsideBody>
 				<Navigation menu={dashboardPagesMenu} id='aside-dashboard' />
-				{!doc && (
-					<>
+			
 						<NavigationLine />
 						<Navigation menu={demoPagesMenu} id='aside-demo-pages' />
 						<NavigationLine />
 						<Navigation menu={pageLayoutTypesPagesMenu} id='aside-menu' />
-					</>
-				)}
+					
+			
 
-				{doc && (
-					<>
-						<NavigationLine />
-						<Navigation menu={componentPagesMenu} id='aside-menu-two' />
-						<NavigationLine />
-					</>
-				)}
+			
 
-				{asideStatus && doc && (
-					<Card className='m-3 '>
-						<CardBody className='pt-0'>
-							{/* eslint-disable-next-line @next/next/no-img-element */}
-							<img src={Hand} alt='Hand' width={130} height={130} />
-							<p
-								className={classNames('h4', {
-									'text-dark': !darkModeStatus,
-									'text-light': darkModeStatus,
-								})}>
-								{t('Everything is ready!')}
-							</p>
-							<Button
-								color='info'
-								isLight
-								className='w-100'
-								onClick={() => {
-									localStorage.setItem('facit_asideDocStatus', 'false');
-									setDoc(false);
-								}}>
-								{t('Demo Pages')}
-							</Button>
-						</CardBody>
-					</Card>
-				)}
+				
 			</AsideBody>
-			<AsideFoot>
-				<nav aria-label='aside-bottom-menu'>
-					<div className='navigation'>
-						<div
-							role='presentation'
-							className='navigation-item cursor-pointer'
-							onClick={() => {
-								localStorage.setItem('facit_asideDocStatus', String(!doc));
-								setDoc(!doc);
-								ReactGA.event({
-									category: 'Documentation',
-									action: 'TEST - Documentation Start',
-									label: 'Documentation Button',
-								});
-							}}
-							data-tour='documentation'>
-							<span className='navigation-link navigation-link-pill'>
-								<span className='navigation-link-info'>
-									<Icon
-										icon={doc ? 'ToggleOn' : 'ToggleOff'}
-										color={doc ? 'success' : undefined}
-										className='navigation-icon'
-									/>
-									<span className='navigation-text'>
-										{t('menu:Documentation')}
-									</span>
-								</span>
-								<span className='navigation-link-extra'>
-									<Icon
-										icon='Circle'
-										className={classNames(
-											'navigation-notification',
-											'text-success',
-											'animate__animated animate__heartBeat animate__infinite animate__slower',
-										)}
-									/>
-								</span>
-							</span>
-						</div>
-					</div>
-				</nav>
-				<User />
-			</AsideFoot>
+			
 		</Aside>
 	);
 };

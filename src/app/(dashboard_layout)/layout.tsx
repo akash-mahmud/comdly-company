@@ -17,6 +17,8 @@ import App from '../../layout/App/App';
 import AsideRoutes from '../../layout/Aside/AsideRoutes';
 import { ToastCloseButton } from '../../components/bootstrap/Toasts';
 import { Inter } from 'next/font/google'
+import AuthenticateGard from '@/auth/AuthenticateGard';
+import RolebasedAuth from '@/auth/RolebasedAuth';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -50,8 +52,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        
-      <AuthContextProvider>
+        <AuthenticateGard>
+			{/* @ts-ignore */}
+			<RolebasedAuth companyRole={['owner' , 'employee']}>
+			<AuthContextProvider>
+			
 			<ThemeContextProvider>
 				<ThemeProvider theme={theme}>
 					<TourProvider
@@ -77,6 +82,10 @@ export default function RootLayout({
 				</ThemeProvider>
 			</ThemeContextProvider>
 		</AuthContextProvider>
+			</RolebasedAuth>
+		
+		</AuthenticateGard>
+   
         </body>
     </html>
   )
