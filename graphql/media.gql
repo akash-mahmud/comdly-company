@@ -1,0 +1,7 @@
+mutation UploadFile($file: Upload!) {
+  uploadFile(file: $file) {
+    message
+        success
+    file
+  }
+}

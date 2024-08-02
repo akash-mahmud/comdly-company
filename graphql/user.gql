@@ -1,0 +1,59 @@
+mutation CompanyRegister($input: CreateOneUserArgsCustom!) {
+  companyRegister(input: $input) {
+    __typename
+    message
+    success
+  }
+}
+
+query MeCompany {
+  meCompany {
+    avater
+    email
+    firstname
+    id
+    lastname
+    role
+    status
+    phoneNumber
+    company {
+      id
+      fetaureImage
+      buisnessCategoryId
+      logo
+      name
+      slug
+    }
+  }
+}
+
+mutation CompanyLogin($password: String!, $email: String!) {
+  companyLogin(password: $password, email: $email) {
+    accessToken
+    isAuthenticated
+    message
+    success
+    user {
+      id
+    }
+  }
+}
+
+mutation RefreshToken {
+  refreshToken
+}
+
+
+mutation UpdateProfile($input: UpdateOneUserArgsCustom!, $passwordInput: UpdateProfilePaswordArgs!) {
+  updateProfile(input: $input, passwordInput: $passwordInput) {
+    message
+    success
+  }
+}
+# mutation AddPaymentMethod($token: String!) {
+#   addPaymentMethod(token: $token)
+# }
+
+# mutation EmailVerification($token: String!) {
+#   emailVerification(token: $token)
+# }
