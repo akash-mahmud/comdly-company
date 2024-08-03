@@ -3,7 +3,7 @@ import type { NextPage } from 'next';
 import { GetStaticProps } from 'next';
 import Head from 'next/head';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { useRouter,  } from 'next/router';
+import { useRouter, } from 'next/router';
 import { useFormik } from 'formik';
 import classNames from 'classnames';
 import Link from 'next/link';
@@ -20,7 +20,7 @@ import Alert from '../../../components/bootstrap/Alert';
 import FormGroup from '../../../components/bootstrap/forms/FormGroup';
 import Input from '../../../components/bootstrap/forms/Input';
 import Spinner from '../../../components/bootstrap/Spinner';
-import { useCompanyLoginMutation, useCompanyRegisterMutation } from '../../../src/graphql/generated/schema';
+import { useCompanyLoginMutation, useCompanyRegisterMutation } from '../../../graphql/generated/schema';
 import { demoPagesMenu } from '../../../menu';
 import { USER_COOKIE } from '../../../utils/session';
 import { notification, Spin } from 'antd';
@@ -58,64 +58,64 @@ const Login: NextPage<ILoginProps> = ({ isSignUp }) => {
 	const [signInPassword, setSignInPassword] = useState<boolean>(false);
 	const [singUpStatus, setSingUpStatus] = useState<boolean>(!!isSignUp);
 	// const searchQuery = useSearchParams()
-// const redirectTo = searchQuery?.get("redirectTo")
-const redirectTo = ""
-const [Login , {loading:companyLoginLoading}] = useCompanyLoginMutation()
-	const handleOnLogin = useCallback( async(values: {
-    email: string;
-    password: string;
-}) => {
-const {data} = await Login({
-	variables:{
-	...values
-	}
-})
-if (data?.companyLogin?.success) {
-	const {accessToken , user} = data?.companyLogin
-	const localStoreVal = {
-	  token: accessToken
-	}
-	localStorage.setItem(USER_COOKIE,accessToken??"")
-	authorize()
-	if (redirectTo) {
-	 router.push(redirectTo)
+	// const redirectTo = searchQuery?.get("redirectTo")
+	const redirectTo = ""
+	const [Login, { loading: companyLoginLoading }] = useCompanyLoginMutation()
+	const handleOnLogin = useCallback(async (values: {
+		email: string;
+		password: string;
+	}) => {
+		const { data } = await Login({
+			variables: {
+				...values
+			}
+		})
+		if (data?.companyLogin?.success) {
+			const { accessToken, user } = data?.companyLogin
+			const localStoreVal = {
+				token: accessToken
+			}
+			localStorage.setItem(USER_COOKIE, accessToken ?? "")
+			authorize()
+			if (redirectTo) {
+				router.push(redirectTo)
 
-	}else{
-	 router.push('/')
+			} else {
+				router.push('/')
 
-	}
-	// notification.success({
-	//  message:'Logged in'
-	// })
-   }else{
-console.log(data);
+			}
+			// notification.success({
+			//  message:'Logged in'
+			// })
+		} else {
+			console.log(data);
 
-   }
-	// router.push('/')
-}, [router]);
+		}
+		// router.push('/')
+	}, [router]);
 
-const [register , {loading}] = useCompanyRegisterMutation()
+	const [register, { loading }] = useCompanyRegisterMutation()
 
-	const handelRegister = useCallback(async (values:{
-        email: string;
-        password: string;
-        firstname: string;
-        lastname: string;
-        phoneNumber: string;
-    }) => {
- const {data} = await register({
-	variables:{
-		input: values
-	}
- })
-if (data?.companyRegister?.success) {
-	notification.success({
-		message:"Account created successfully"
-	})
-	router.push("/auth/login")
-		setSignInPassword(false);
-													setSingUpStatus(!singUpStatus);
-}
+	const handelRegister = useCallback(async (values: {
+		email: string;
+		password: string;
+		firstname: string;
+		lastname: string;
+		phoneNumber: string;
+	}) => {
+		const { data } = await register({
+			variables: {
+				input: values
+			}
+		})
+		if (data?.companyRegister?.success) {
+			notification.success({
+				message: "Account created successfully"
+			})
+			router.push("/auth/login")
+			setSignInPassword(false);
+			setSingUpStatus(!singUpStatus);
+		}
 	}, [router]
 
 	)
@@ -141,16 +141,16 @@ if (data?.companyRegister?.success) {
 			return errors;
 		},
 		validateOnChange: false,
-		onSubmit: async (values:{
-			email:string, 
-			password:string
+		onSubmit: async (values: {
+			email: string,
+			password: string
 		}) => {
-			
-	
 
-				await	handleOnLogin(values);
-			
-			
+
+
+			await handleOnLogin(values);
+
+
 		},
 	});
 
@@ -158,17 +158,17 @@ if (data?.companyRegister?.success) {
 	const formikForRegister = useFormik({
 		enableReinitialize: true,
 		initialValues: {
-	email:'',
-	password:'',
-	firstname:'',
-	lastname:'',
-	phoneNumber:''
+			email: '',
+			password: '',
+			firstname: '',
+			lastname: '',
+			phoneNumber: ''
 		},
-	
+
 		validateOnChange: false,
 		onSubmit: (values) => {
-			
-		handelRegister(values)
+
+			handelRegister(values)
 
 		},
 	});
@@ -179,9 +179,9 @@ if (data?.companyRegister?.success) {
 	const handleContinue = () => {
 		setIsLoading(true);
 		setTimeout(() => {
-		
-				setSignInPassword(true);
-			
+
+			setSignInPassword(true);
+
 			setIsLoading(false);
 		}, 1000);
 	};
@@ -247,216 +247,216 @@ if (data?.companyRegister?.success) {
 								</div>
 
 								<LoginHeader isNewUser={singUpStatus} />
-							
-									<Spin spinning={loading ||companyLoginLoading}>
-								<form className='row g-4'>
-									{singUpStatus ? (
-										<>
-											{/* 
+
+								<Spin spinning={loading || companyLoginLoading}>
+									<form className='row g-4'>
+										{singUpStatus ? (
+											<>
+												{/* 
 										
 										Register form
 										*/}
 
-											<div className='col-12'>
-												<FormGroup
-													id='email'
-													isFloating
-													
-													label='Your email'>
-													<Input type='email' autoComplete='email'
-													
-													value={formikForRegister.values.email}
-													isTouched={formikForRegister.touched.email}
-													invalidFeedback={
-														formikForRegister.errors.email
-													}
-													isValid={formikForRegister.isValid}
-													onChange={formikForRegister.handleChange}
-													onBlur={formikForRegister.handleBlur}
-													onFocus={() => {
-														formikForRegister.setErrors({});
-													}}
-													/>
-												</FormGroup>
-											</div>
-											<div className='col-12'>
-												<FormGroup
-													id='firstname'
-													isFloating
-													label='First name'
-												>
-													<Input 	value={formikForRegister.values.firstname}
-													isTouched={formikForRegister.touched.firstname}
-													invalidFeedback={
-														formikForRegister.errors.firstname
-													}
-													isValid={formikForRegister.isValid}
-													onChange={formikForRegister.handleChange}
-													onBlur={formikForRegister.handleBlur}
-													onFocus={() => {
-														formikForRegister.setErrors({});
-													}} 
-														autoComplete='given-name' />
-												</FormGroup>
-											</div>
-											<div className='col-12'>
-												<FormGroup
-													id='lastname'
-													isFloating
-													label='Last name'
-												>
-													<Input value={formikForRegister.values.lastname}
-													isTouched={formikForRegister.touched.lastname}
-													invalidFeedback={
-														formikForRegister.errors.lastname
-													}
-													isValid={formikForRegister.isValid}
-													onChange={formikForRegister.handleChange}
-													onBlur={formikForRegister.handleBlur}
-													onFocus={() => {
-														formikForRegister.setErrors({});
-													}} 
-														autoComplete='family-name' />
-												</FormGroup>
-											</div>
-											<div className='col-12'>
-												<FormGroup
-													id='phoneNumber'
-													isFloating
-													label='phoneNumber'
-												>
-													<Input value={formikForRegister.values.phoneNumber}
-													isTouched={formikForRegister.touched.phoneNumber}
-													invalidFeedback={
-														formikForRegister.errors.phoneNumber
-													}
-													isValid={formikForRegister.isValid}
-													onChange={formikForRegister.handleChange}
-													onBlur={formikForRegister.handleBlur}
-													onFocus={() => {
-														formikForRegister.setErrors({});
-													}}  autoComplete='family-name'/>
-												</FormGroup>
-											</div>
-											<div className='col-12'>
-												<FormGroup
-													id='password'
-													isFloating
-													label='Password'
-												>
-													<Input value={formikForRegister.values.password}
-													isTouched={formikForRegister.touched.password}
-													invalidFeedback={
-														formikForRegister.errors.password
-													}
-													isValid={formikForRegister.isValid}
-													onChange={formikForRegister.handleChange}
-													onBlur={formikForRegister.handleBlur}
-													onFocus={() => {
-														formikForRegister.setErrors({});
-													}}  
+												<div className='col-12'>
+													<FormGroup
+														id='email'
+														isFloating
 
-														type='password'
-														autoComplete='password'
-													/>
-												</FormGroup>
-											</div>
-											<div className='col-12'>
-												<Button
-													color='info'
-													className='w-100 py-3'
-													onClick={formikForRegister.handleSubmit}>
-													Sign Up
-												</Button>
-											</div>
-									
-										</>
-									) : (
-										<>
+														label='Your email'>
+														<Input type='email' autoComplete='email'
 
-											{/* 
+															value={formikForRegister.values.email}
+															isTouched={formikForRegister.touched.email}
+															invalidFeedback={
+																formikForRegister.errors.email
+															}
+															isValid={formikForRegister.isValid}
+															onChange={formikForRegister.handleChange}
+															onBlur={formikForRegister.handleBlur}
+															onFocus={() => {
+																formikForRegister.setErrors({});
+															}}
+														/>
+													</FormGroup>
+												</div>
+												<div className='col-12'>
+													<FormGroup
+														id='firstname'
+														isFloating
+														label='First name'
+													>
+														<Input value={formikForRegister.values.firstname}
+															isTouched={formikForRegister.touched.firstname}
+															invalidFeedback={
+																formikForRegister.errors.firstname
+															}
+															isValid={formikForRegister.isValid}
+															onChange={formikForRegister.handleChange}
+															onBlur={formikForRegister.handleBlur}
+															onFocus={() => {
+																formikForRegister.setErrors({});
+															}}
+															autoComplete='given-name' />
+													</FormGroup>
+												</div>
+												<div className='col-12'>
+													<FormGroup
+														id='lastname'
+														isFloating
+														label='Last name'
+													>
+														<Input value={formikForRegister.values.lastname}
+															isTouched={formikForRegister.touched.lastname}
+															invalidFeedback={
+																formikForRegister.errors.lastname
+															}
+															isValid={formikForRegister.isValid}
+															onChange={formikForRegister.handleChange}
+															onBlur={formikForRegister.handleBlur}
+															onFocus={() => {
+																formikForRegister.setErrors({});
+															}}
+															autoComplete='family-name' />
+													</FormGroup>
+												</div>
+												<div className='col-12'>
+													<FormGroup
+														id='phoneNumber'
+														isFloating
+														label='phoneNumber'
+													>
+														<Input value={formikForRegister.values.phoneNumber}
+															isTouched={formikForRegister.touched.phoneNumber}
+															invalidFeedback={
+																formikForRegister.errors.phoneNumber
+															}
+															isValid={formikForRegister.isValid}
+															onChange={formikForRegister.handleChange}
+															onBlur={formikForRegister.handleBlur}
+															onFocus={() => {
+																formikForRegister.setErrors({});
+															}} autoComplete='family-name' />
+													</FormGroup>
+												</div>
+												<div className='col-12'>
+													<FormGroup
+														id='password'
+														isFloating
+														label='Password'
+													>
+														<Input value={formikForRegister.values.password}
+															isTouched={formikForRegister.touched.password}
+															invalidFeedback={
+																formikForRegister.errors.password
+															}
+															isValid={formikForRegister.isValid}
+															onChange={formikForRegister.handleChange}
+															onBlur={formikForRegister.handleBlur}
+															onFocus={() => {
+																formikForRegister.setErrors({});
+															}}
+
+															type='password'
+															autoComplete='password'
+														/>
+													</FormGroup>
+												</div>
+												<div className='col-12'>
+													<Button
+														color='info'
+														className='w-100 py-3'
+														onClick={formikForRegister.handleSubmit}>
+														Sign Up
+													</Button>
+												</div>
+
+											</>
+										) : (
+											<>
+
+												{/* 
 										
 										Login Form
 										
 										*/}
 
-											<div className='col-12 '>
-												<FormGroup
-													id='email'
-													isFloating
-													label='Your email or username'
-													className={classNames({
-														'd-none': signInPassword,
-													})}>
-													<Input
-														autoComplete='username'
-														value={formik.values.email}
-														isTouched={formik.touched.email}
-														invalidFeedback={
-															formik.errors.email
-														}
-														isValid={formik.isValid}
-														onChange={formik.handleChange}
-														onBlur={formik.handleBlur}
-														onFocus={() => {
-															formik.setErrors({});
-														}}
-													/>
-												</FormGroup>
-												{signInPassword && (
-													<div className='text-center h4 mb-3 fw-bold'>
-														Hi, {formik.values.email}.
-													</div>
-												)}
-												<FormGroup 
-													id='password'
-													isFloating
-													label='Password'
-													className={classNames({
-														'd-none': !signInPassword,
-													})}>
-													<Input
-														type='password'
-														autoComplete='current-password'
-														value={formik.values.password}
-														isTouched={formik.touched.password}
-														invalidFeedback={
-															formik.errors.password
-														}
-														validFeedback='Looks good!'
-														isValid={formik.isValid}
-														onChange={formik.handleChange}
-														onBlur={formik.handleBlur}
-													/>
-												</FormGroup>
-											</div>
-											<div className='col-12'>
-												{!signInPassword ? (
-													<Button
-														color='warning'
-														className='w-100 py-3'
-														isDisable={!formik.values.email}
-														onClick={handleContinue}>
-														{isLoading && (
-															<Spinner isSmall inButton isGrow />
-														)}
-														Continue
-													</Button>
-												) : (
-													<Button
-														color='warning'
-														className='w-100 py-3'
-														onClick={formik.handleSubmit}>
-														Login
-													</Button>
-												)}
-											</div>
-										</>
-									)}
+												<div className='col-12 '>
+													<FormGroup
+														id='email'
+														isFloating
+														label='Your email or username'
+														className={classNames({
+															'd-none': signInPassword,
+														})}>
+														<Input
+															autoComplete='username'
+															value={formik.values.email}
+															isTouched={formik.touched.email}
+															invalidFeedback={
+																formik.errors.email
+															}
+															isValid={formik.isValid}
+															onChange={formik.handleChange}
+															onBlur={formik.handleBlur}
+															onFocus={() => {
+																formik.setErrors({});
+															}}
+														/>
+													</FormGroup>
+													{signInPassword && (
+														<div className='text-center h4 mb-3 fw-bold'>
+															Hi, {formik.values.email}.
+														</div>
+													)}
+													<FormGroup
+														id='password'
+														isFloating
+														label='Password'
+														className={classNames({
+															'd-none': !signInPassword,
+														})}>
+														<Input
+															type='password'
+															autoComplete='current-password'
+															value={formik.values.password}
+															isTouched={formik.touched.password}
+															invalidFeedback={
+																formik.errors.password
+															}
+															validFeedback='Looks good!'
+															isValid={formik.isValid}
+															onChange={formik.handleChange}
+															onBlur={formik.handleBlur}
+														/>
+													</FormGroup>
+												</div>
+												<div className='col-12'>
+													{!signInPassword ? (
+														<Button
+															color='warning'
+															className='w-100 py-3'
+															isDisable={!formik.values.email}
+															onClick={handleContinue}>
+															{isLoading && (
+																<Spinner isSmall inButton isGrow />
+															)}
+															Continue
+														</Button>
+													) : (
+														<Button
+															color='warning'
+															className='w-100 py-3'
+															onClick={formik.handleSubmit}>
+															Login
+														</Button>
+													)}
+												</div>
+											</>
+										)}
 
 
-								</form>
-										</Spin>
+									</form>
+								</Spin>
 							</CardBody>
 						</Card>
 						<div className='text-center'>

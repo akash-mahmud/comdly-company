@@ -1,10 +1,10 @@
 import React, { createContext, FC, ReactNode, useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useMeCompanyQuery } from '../src/graphql/generated/schema';
+import { useMeCompanyQuery } from '../graphql/generated/schema';
 
 export interface IAuthContextProps {
 	isAuthorized: boolean;
-    user:{
+	user: {
 		__typename?: "CompanyUserForResponsce";
 		avater?: string | null;
 		email?: string | null;
@@ -26,35 +26,35 @@ export interface IAuthContextProps {
 	} | null | undefined
 
 
-    loading: boolean;
-    authorize(): void;
-    unauthorize(): void;
+	loading: boolean;
+	authorize(): void;
+	unauthorize(): void;
 }
 const AuthContext = createContext<IAuthContextProps>({} as IAuthContextProps);
 
 interface IAuthContextProviderProps {
-	children: ReactNode; 
+	children: ReactNode;
 }
 export const AuthContextProvider: FC<IAuthContextProviderProps> = ({ children }) => {
 	// @ts-ignore
 
-	const {data , loading, refetch} = useMeCompanyQuery()
+	const { data, loading, refetch } = useMeCompanyQuery()
 
 
 
 	const value = useMemo(
 		() => ({
-			isAuthorized: data?.meCompany?.id?true:false,
+			isAuthorized: data?.meCompany?.id ? true : false,
 			user: data?.meCompany,
 			loading,
 			authorize() {
-			  refetch()
+				refetch()
 			},
 			unauthorize() {
-		
-			  //? call server logout and all localstorage and cookie clear function
-		
-		
+
+				//? call server logout and all localstorage and cookie clear function
+
+
 			},
 
 		}),

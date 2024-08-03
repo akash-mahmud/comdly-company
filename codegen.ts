@@ -9,7 +9,7 @@ const config: CodegenConfig = {
   ],
   documents: "**/*.{gql,graphql}",
   generates: {
-    "src/graphql/generated/schema.ts": {
+    "graphql/generated/schema.ts": {
       // preset: "client",
       plugins: [
         "typescript",

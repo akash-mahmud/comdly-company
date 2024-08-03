@@ -34,7 +34,7 @@ import useDarkMode from '../../hooks/useDarkMode';
 import USERS from '@/common/data/userDummyData';
 import data from '@/common/data/dummyEventsData';
 import EVENT_STATUS from '@/common/data/enumEventStatus';
-import {BookingStatus, useBookingsQuery} from '@/src/graphql/generated/schema'
+import { BookingStatus, useBookingsQuery } from '@/graphql/generated/schema'
 import AuthContext from '@/context/authContext';
 interface IBookingsTableProps {
 	isFluid?: boolean;
@@ -70,29 +70,29 @@ const BookingsTable: FC<IBookingsTableProps> = ({ isFluid }) => {
 			time: '10:30',
 			note: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer ut nisi odio. Nam sit amet pharetra enim. Nulla facilisi. Nunc dictum felis id massa mattis pretium. Mauris at blandit orci. Nunc vulputate vulputate turpis vitae cursus. In sit amet turpis tincidunt, interdum ex vitae, sollicitudin massa. Maecenas eget dui molestie, ullamcorper ante vel, tincidunt nisi. Donec vitae pulvinar risus. In ultricies nisl ac massa malesuada, vel tempus neque placerat.',
 			notify: true,
-		}, 
+		},
 	});
-const {user} = useContext(AuthContext)
+	const { user } = useContext(AuthContext)
 	const [currentPage, setCurrentPage] = useState(1);
 	const [perPage, setPerPage] = useState(PER_COUNT['5']);
 	// const { items, requestSort, getClassNamesFor } = useSortableData(data);
 
-	const {data} = useBookingsQuery({
-		variables:{
-			where:{
-				companyId:{
-					equals:user?.company?.id
+	const { data } = useBookingsQuery({
+		variables: {
+			where: {
+				companyId: {
+					equals: user?.company?.id
 				}
 			}
 		}
 	})
-const bookings = data?.bookings??[]
+	const bookings = data?.bookings ?? []
 
 
 	return (
 		<>
 			<Card stretch={isFluid}>
-			
+
 				<CardBody className='table-responsive' isScrollable={isFluid}>
 					<table className='table table-modern'>
 						<thead>
@@ -109,7 +109,7 @@ const bookings = data?.bookings??[]
 									/>
 								</th>
 								<th>Customer</th>
-								
+
 								<th>Status</th>
 								<td />
 							</tr>
@@ -164,8 +164,8 @@ const bookings = data?.bookings??[]
 											</div>
 										</div>
 									</td>
-								
-								
+
+
 									<td>
 										<Dropdown>
 											<DropdownToggle hasIcon={false}>
@@ -183,7 +183,7 @@ const bookings = data?.bookings??[]
 														<div>
 															<Icon
 																icon='Circle'
-																// color={EVENT_STATUS[key].color}
+															// color={EVENT_STATUS[key].color}
 															/>
 															{BookingStatus[key]}
 														</div>
@@ -192,13 +192,13 @@ const bookings = data?.bookings??[]
 											</DropdownMenu>
 										</Dropdown>
 									</td>
-								
+
 								</tr>
 							))}
 						</tbody>
 					</table>
 				</CardBody>
-			
+
 			</Card>
 
 			<OffCanvas
