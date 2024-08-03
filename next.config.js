@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 const { i18n } = require('./next-i18next.config');
 const withImages = require('next-images');
 const withInterceptStdout = require('next-intercept-stdout');
@@ -12,6 +13,12 @@ var hideWarn = [
 	"Cannot read properties of null (reading 'length')"
 ];
 
+=======
+/** @type {import('next').NextConfig} */
+const { i18n } = require('./next-i18next.config');
+const withImages = require('next-images');
+const withInterceptStdout = require('next-intercept-stdout');
+>>>>>>> origin/master
 const nextConfig = withInterceptStdout(
 	withImages({
 		experimental: {
@@ -24,9 +31,18 @@ const nextConfig = withInterceptStdout(
 		},
 		reactStrictMode: true,
 		swcMinify: true,
+<<<<<<< HEAD
 		i18n
 	}),
 	(log) => (hideWarn.some((warn) => log.includes(warn)) ? '' : log),
 );
 
 module.exports = nextConfig;
+=======
+		
+	}),
+	(log) => log,
+);
+
+module.exports = nextConfig
+>>>>>>> origin/master

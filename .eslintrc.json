@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "env": {
     "browser": true,
     "es2021": true
@@ -69,4 +70,7 @@
   "settings": {
     "import/ignore": ["node_modules"]
   }
+=======
+  "extends": "next/core-web-vitals"
+>>>>>>> origin/master
 }

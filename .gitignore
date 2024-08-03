@@ -23,7 +23,10 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+<<<<<<< HEAD
 .pnpm-debug.log*
+=======
+>>>>>>> origin/master
 
 # local env files
 .env*.local
@@ -34,6 +37,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+<<<<<<< HEAD
 
 # WebStorm
 .idea
+=======
+>>>>>>> origin/master
